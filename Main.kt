@@ -87,39 +87,31 @@ fun generateSecret(wordLength: Int, alphabet: String): String {
     return List(wordLength) { alphabet.random() }.joinToString("")
 }
 
-fun countExactMatches(
+const val ANSI_RESET = "\u001B[0m"
+const val ANSI_BLACK = "\u001B[30m"
+const val ANSI_RED = "\u001B[31m"
+const val ANSI_GREEN = "\u001B[32m"
+const val ANSI_YELLOW = "\u001B[33m"
+const val ANSI_BLUE = "\u001B[34m"
+const val ANSI_PURPLE = "\u001B[35m"
+const val ANSI_CYAN = "\u001B[36m"
+const val ANSI_WHITE = "\u001B[37m"
+
+fun printRoundResults(
     secret: String,
     guess: String
-): Int {
-    val matches: String = guess.filterIndexed { index, symbol -> secret[index] == symbol }
-    return matches.length
-}
-
-
-fun countPartialMatches(
-    secret: String,
-    guess: String
-): Int {
-    var guessInSecret = ""
-    for (symbol in guess) {
-        if (secret.contains(symbol)) {
-            guessInSecret += symbol
+) {
+    var wordlResult = ANSI_RESET
+    for (i in guess.indices) {
+        if (secret[i] == guess[i]) {
+            wordlResult += ANSI_GREEN
+        } else if (secret.contains(guess[i])) {
+            wordlResult += ANSI_YELLOW
+        } else {
+            wordlResult += ANSI_RED
         }
+        wordlResult += guess[i]
     }
-    var secretInGuess = ""
-    for (symbol in secret) {
-        if (guess.contains(symbol)) {
-            secretInGuess += symbol
-        }
-    }
-
-    val partials: Int = minOf(guessInSecret.length, secretInGuess.length)
-    val exacts: Int = countExactMatches(secret, guess)
-    return partials - exacts
-}
-
-fun printRoundResults(secret: String, guess: String) {
-    val partials = countPartialMatches(secret, guess)
-    val exacts = countExactMatches(secret, guess)
-    println("Your guess '$guess', has $exacts full matches and $partials partial matches.")
+    wordlResult += ANSI_RESET
+    println(wordlResult)
 }
