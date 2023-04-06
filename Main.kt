@@ -2,9 +2,10 @@ fun main() {
     // Set up:
     val alphabet = "ABCDEFGH" // the letters available to select from random for the secret word
     val wordLength = 4 // how many characters in the secret word
+    val maxAttemptsCount = 4
 
     // Run the game:
-    playGame(generateSecret(wordLength, alphabet), wordLength, 3, alphabet)
+    playGame(generateSecret(wordLength, alphabet), wordLength, maxAttemptsCount, alphabet)
 }
 
 fun playGame(
@@ -28,15 +29,14 @@ fun playGame(
         }
     } while (!complete && tries <= maxAttemptsCount)
 
-    if (isWin(complete, tries, maxAttemptsCount)) {
+    if (complete) {
         println("Congratulations! You guessed it!")
-    }
-    else if (isLost(complete, tries, maxAttemptsCount)) {
+    } else {
         println("Sorry, you lost! :( The secret word was: $secret")
     }
-
-
 }
+
+fun isComplete(secret: String, guess: String) = (secret == guess)
 
 fun isCorrectInput(userInput: String, wordLength: Int, alphabet: String): Boolean {
 
@@ -57,20 +57,14 @@ fun isCorrectInput(userInput: String, wordLength: Int, alphabet: String): Boolea
         true
 }
 
+val newLineSymbol: String = System.lineSeparator()
+
+fun safeReadLine() = readlnOrNull() ?: error("Your input is incorrect, sorry")
+
 fun safeUserInput(wordLength: Int, alphabet: String): String {
     println("Please input your guess. It should be of length $wordLength, and each symbol should be from the alphabet: $alphabet.")
     return safeReadLine()
 }
-
-fun isWin(complete: Boolean, attempts: Int, maxAttemptsCount: Int): Boolean {
-    return complete && attempts <= maxAttemptsCount
-}
-
-fun isLost(complete: Boolean, attempts: Int, maxAttemptsCount: Int): Boolean {
-    return !complete && attempts > maxAttemptsCount
-}
-
-fun isComplete(secret: String, guess: String) = (secret == guess)
 
 fun printGameRules(
     wordLength: Int,
